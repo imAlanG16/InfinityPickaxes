@@ -26,6 +26,15 @@ stations:
     interaction-distance: 6.0
     require-registered-instance: true
     bypass-permission: infinitygear.station.runic-table.bypass
+    particles:
+      enabled: true
+      type: ENCHANT
+      interval-ticks: 10
+      count: 8
+      offset-x: 0.35
+      offset-y: 0.8
+      offset-z: 0.35
+      speed: 0.02
   fusion-altar:
     enabled: true
     provider: VANILLA
@@ -34,6 +43,15 @@ stations:
     interaction-distance: 6.0
     require-registered-instance: true
     bypass-permission: infinitygear.station.fusion-altar.bypass
+    particles:
+      enabled: true
+      type: ENCHANT
+      interval-ticks: 10
+      count: 8
+      offset-x: 0.35
+      offset-y: 0.8
+      offset-z: 0.35
+      speed: 0.02
   gear-forge:
     enabled: true
     provider: VANILLA
@@ -42,3 +60,12 @@ stations:
     interaction-distance: 6.0
     require-registered-instance: true
     bypass-permission: infinitygear.station.gear-forge.bypass
+    particles:
+      enabled: true
+      type: ENCHANT
+      interval-ticks: 10
+      count: 8
+      offset-x: 0.35
+      offset-y: 0.8
+      offset-z: 0.35
+      speed: 0.02

@@ -41,7 +41,9 @@ public class InfinityPickaxeCommand implements CommandExecutor, TabCompleter {
         if (args.length == 0) {
             if (gearCommand) {
                 if (!(sender instanceof Player player)) { sendHelp(sender); return true; }
-                if (!hasUse(player)) { plugin.getMessageManager().sendMessage(player, "messages.no-permission"); return true; }
+
+                if (!hasUse(player)) { plugin.getMessageManager().sendMessage(player, "messages.no-permission");
+                    return true; }
                 GearSnapshot snapshot = plugin.getGearService().inspect(player.getInventory().getItemInMainHand()).orElse(null);
                 if (snapshot == null) { player.sendMessage("§cHold an InfinityGear item to inspect it."); return true; }
                 player.sendMessage("§bInfinityGear §8» §f" + snapshot.profileId() + " §7Lv." + snapshot.level());

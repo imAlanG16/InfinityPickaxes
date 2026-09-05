@@ -3,6 +3,7 @@ package com.infinitygear.station;
 import com.infinitypickaxes.InfinityPickaxes;
 import org.bukkit.Material;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -22,9 +23,12 @@ public final class StationManager {
     private static final long FURNITURE_BIND_TIMEOUT_MILLIS = 30_000L;
     private record PendingFurnitureBinding(StationType type, long expiresAt) {}
 
+    public record ParticleSettings(boolean enabled, Particle type, long intervalTicks, int count,
+                                   double offsetX, double offsetY, double offsetZ, double speed) {}
+
     public record Definition(boolean enabled, String provider, String providerId,
                              Material vanillaMaterial, double distance, String bypassPermission,
-                             boolean requireRegisteredInstance) {}
+                             boolean requireRegisteredInstance, ParticleSettings particles) {}
 
     public StationManager(InfinityPickaxes plugin) {
         this.plugin = plugin;
@@ -63,9 +67,29 @@ public final class StationManager {
             Definition definition = new Definition(enabled, provider, providerId,
                     material, Math.max(1, section.getDouble("interaction-distance", 6)),
                     section.getString("bypass-permission", "infinitygear.station." + type.configKey() + ".bypass"),
-                    section.getBoolean("require-registered-instance", true));
+                    section.getBoolean("require-registered-instance", true), loadParticles(type, section, logger));
             definitions.put(type, definition);
         }
+    }
+
+    private ParticleSettings loadParticles(StationType type, ConfigurationSection section, Logger logger) {
+        boolean enabled = section.getBoolean("particles.enabled", false);
+        Particle particle = null;
+        String configuredType = section.getString("particles.type", "ENCHANT");
+        try {
+            particle = Particle.valueOf(configuredType.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException invalid) {
+            logger.warning("Particles for station " + type.configKey() + " are disabled: unknown particle '"
+                    + configuredType + "'.");
+            enabled = false;
+        }
+        return new ParticleSettings(enabled, particle,
+                Math.max(1, section.getLong("particles.interval-ticks", 10)),
+                Math.max(0, section.getInt("particles.count", 8)),
+                Math.max(0, section.getDouble("particles.offset-x", 0.35)),
+                Math.max(0, section.getDouble("particles.offset-y", 0.8)),
+                Math.max(0, section.getDouble("particles.offset-z", 0.35)),
+                Math.max(0, section.getDouble("particles.speed", 0.02)));
     }
 
     public boolean authorized(StationType type, Player player, Block block) {
@@ -198,4 +222,6 @@ public final class StationManager {
     }
 
     public Definition definition(StationType type) { return definitions.get(type); }
+
+    public Map<Location, StationType> particleInstances() { return instances.snapshot(); }
 }

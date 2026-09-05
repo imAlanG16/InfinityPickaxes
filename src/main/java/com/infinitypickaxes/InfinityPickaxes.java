@@ -123,6 +123,7 @@ public class InfinityPickaxes extends JavaPlugin {
                 org.bukkit.plugin.ServicePriority.Normal);
         this.guiManager = new GuiManager(this);
         this.stationManager = new StationManager(this);
+        Bukkit.getScheduler().runTaskTimer(this, new com.infinitygear.station.StationParticleTask(stationManager), 1L, 1L);
 
         int socketsCount = enchantManager.getAllSockets().size();
         boolean ecoPresent = enchantManager.getEcoHook().isEcoEnchantsPresent();
